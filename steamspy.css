@@ -1,0 +1,10 @@
+.steamspy p{
+	font-family: "Segoe UI",Arial,sans-serif;
+	color: rgb(103, 193, 245);
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+p strong{
+	    color: #626262;
+}
