@@ -1,85 +1,88 @@
-// document.addEventListener('DOMContentLoaded', function() {
-// 	document.getElementById('myButton').onclick = 
 (function(){
-var xhr = new XMLHttpRequest();
-var gameId = location.href.split('/')[4];
-xhr.open("GET", "https://steamspy.com/api.php?request=appdetails&appid=" + gameId, true); // тут происходит ГЕТ запрос на указанную страницу
-xhr.onreadystatechange = function() {
-  if (xhr.readyState == 4) // если всё прошло хорошо, выполняем, что в скобках
-  {
-  	var timeBeautify = function(t){
-  		var t1,t2;
-  		return (
-  			    (
-  			    	((t1 = Math.floor(t/60))>=10)? t1 : (
-  			    										t1 > 0? 0+""+t1 : '00' 
-  			    									   )
-  			    )
-  			    +":"+
-  			    (
-  			    ((t2 = Math.floor(t%60))>=10)? t2 : (
-  			    										t2 > 0? 0+""+t2 : '00' 
-  			    									   )
-  			    )
-  			   )
-  	};
+	var xhr = new XMLHttpRequest(),
+		gameId = location.href.split('/')[4],
+		steamspyUrl = "https://steamspy.com";
 
-	//alert(xhr.responseText);
-	var el = document.querySelector(".apphub_AppName");
-	console.log(el);
-	var rightcol = document.querySelector(".rightcol.game_meta_data");
-	var bodyDiv = document.createElement('div');
-	var d = document.createElement('div');
-	bodyDiv.appendChild(d);
-	d.className = "steamspy block responsive_apppage_details_right";
-	var data = JSON.parse(xhr.responseText);
+	xhr.open("GET", steamspyUrl + "/api.php?request=appdetails&appid=" + gameId, true); // тут происходит ГЕТ запрос на указанную страницу
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var timeBeautify = function(t) {
+				var t1,t2;
+				return (
+					(
+						((t1 = Math.floor(t/60))>=10)? t1 : (
+															t1 > 0? 0+""+t1 : '00'
+															 )
+					)
+					+":"+
+					(
+					((t2 = Math.floor(t%60))>=10)? t2 : (
+															t2 > 0? 0+""+t2 : '00'
+															 )
+					)
+					)
+			};
 
-	var logoP = document.createElement('p');
-	d.appendChild(logoP);	
+			var data = JSON.parse(xhr.responseText);
 
-	var logoA = document.createElement('a');
-	logoA.href = "https://steamspy.com/app/" + gameId;
-	logoP.appendChild(logoA);	
+			// Setup where to add the data on page
+			var el = document.querySelector(".apphub_AppName");
+			console.log(el);
 
-	var logo = document.createElement('img');
-	logo.src = chrome.extension.getURL( 'icons/logo_white.png' );
-	logoA.appendChild(logo);	
+			if (!el && !!data) {
+				console.log("// == SteamSpy Data For " + app.name + " == //");
+				console.log(data);
+				return;
+			}
 
-	var owners = document.createElement('p');
-	owners.className = "steamSpyOwners";
-	owners.innerHTML = "<strong>Owners:</strong> " + data.owners.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,') + " ± " +data.owners_variance.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,');
-	d.appendChild(owners);
+			// Create new dom elements
+			var rightcol = document.querySelector(".rightcol.game_meta_data");
+			var bodyDiv = document.createElement('div');
+			var d = document.createElement('div');
+			d.className = "steamspy block responsive_apppage_details_right";
+			bodyDiv.appendChild(d);
 
-	var player2 = document.createElement('p');
-	player2.className = "steamSpyPlayer2";
-	player2.innerHTML = "<strong>Players (2 weeks):</strong> " + data.players_2weeks.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,') + " ± " +data.players_2weeks_variance.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,');
-	d.appendChild(player2);
+			// Add SteamSpy logo
+			var logoP = document.createElement('p');
+			d.appendChild(logoP);
 
-	var players = document.createElement('p');
-	players.className = "steamSpyPlayers";
-	players.innerHTML = "<strong>Players total:</strong> " + data.players_forever.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,') + " ± " +data.players_forever_variance.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,');
-	d.appendChild(players);
+			var logoA = document.createElement('a');
+			logoA.href = steamspyUrl + "/app/" + gameId;
+			logoP.appendChild(logoA);
 
-	var peak = document.createElement('p');
-	peak.className = "steamSpyPeak";
-	peak.innerHTML = "<strong>Peak concurrent players yesterday:</strong> " + data.ccu.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1,');
-	d.appendChild(peak);
+			var logo = document.createElement('img');
+			logo.src = chrome.extension.getURL( 'icons/logo_white.png' );
+			logoA.appendChild(logo);
 
-	var playtime2 = document.createElement('p');
-	playtime2.className = "steamSpyPlaytime2";
-	playtime2.innerHTML = "<strong>Playtime (2 weeks):</strong> " + timeBeautify(data.average_2weeks)+ " (AVG) " +timeBeautify(data.median_2weeks)+" (MDN)";
-	d.appendChild(playtime2);
+			if (data.appid === 999999) {
+				var hidden = document.createElement('p');
+				hidden.innerHTML = "<strong>Developer has hidden the data</strong>";
+				d.appendChild(hidden);
+			} else {
+				var owners = document.createElement('p');
+				owners.className = "steamSpyOwners";
+				owners.innerHTML = "<strong>Owners:</strong> " + data.owners;
+				d.appendChild(owners);
 
-	var playtime = document.createElement('p');
-	playtime.className = "steamSpyPlaytime";
-	playtime.innerHTML = "<strong>Playtime total:</strong> " + timeBeautify(data.average_forever)+ " (AVG) " +timeBeautify(data.median_forever)+" (MDN)";
-	d.appendChild(playtime);
+				var peak = document.createElement('p');
+				peak.className = "steamSpyPeak";
+				peak.innerHTML = "<strong>Peak concurrent players yesterday:</strong> " + data.ccu.toString();
+				d.appendChild(peak);
 
-	//d.innerHTML = data.name;
-	rightcol.insertBefore(bodyDiv, rightcol.firstChild);
+				var playtime2 = document.createElement('p');
+				playtime2.className = "steamSpyPlaytime2";
+				playtime2.innerHTML = "<strong>Playtime (2 weeks):</strong> " + timeBeautify(data.average_2weeks)+ " (AVG) " +timeBeautify(data.median_2weeks)+" (MDN)";
+				d.appendChild(playtime2);
 
-  }
-}
-xhr.send();
-} )();
-//}, false);
+				var playtime = document.createElement('p');
+				playtime.className = "steamSpyPlaytime";
+				playtime.innerHTML = "<strong>Playtime total:</strong> " + timeBeautify(data.average_forever)+ " (AVG) " +timeBeautify(data.median_forever)+" (MDN)";
+				d.appendChild(playtime);
+			}
+
+			rightcol.insertBefore(bodyDiv, rightcol.firstChild);
+		}
+	}
+	xhr.send();
+})();
+
