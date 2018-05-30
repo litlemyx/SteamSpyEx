@@ -3,7 +3,7 @@
 (function(){
 var xhr = new XMLHttpRequest();
 var gameId = location.href.split('/')[4];
-xhr.open("GET", "http://steamspy.com/api.php?request=appdetails&appid=" + gameId, true); // тут происходит ГЕТ запрос на указанную страницу
+xhr.open("GET", "https://steamspy.com/api.php?request=appdetails&appid=" + gameId, true); // тут происходит ГЕТ запрос на указанную страницу
 xhr.onreadystatechange = function() {
   if (xhr.readyState == 4) // если всё прошло хорошо, выполняем, что в скобках
   {
@@ -38,7 +38,7 @@ xhr.onreadystatechange = function() {
 	d.appendChild(logoP);	
 
 	var logoA = document.createElement('a');
-	logoA.href = "http://steamspy.com/app/" + gameId; 
+	logoA.href = "https://steamspy.com/app/" + gameId;
 	logoP.appendChild(logoA);	
 
 	var logo = document.createElement('img');

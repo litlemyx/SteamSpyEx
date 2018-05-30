@@ -6,7 +6,7 @@
   
   "content_scripts": [
     {
-      "matches": [ "http://store.steampowered.com/app/*" ],
+      "matches": [ "*://store.steampowered.com/app/*" ],
       "css":["steamspy.css"],
       "js": [ "popup.js" ]
 
@@ -19,7 +19,7 @@
   },
   
   "permissions": [
-    "http://steamspy.com/*"
+    "*://steamspy.com/*"
   ],
   "web_accessible_resources":
     [
