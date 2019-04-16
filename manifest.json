@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SteamSpyEx",
-  "version": "1.0",
+  "version": "1.1",
   "content_scripts": [
     {
       "matches": [ "*://store.steampowered.com/app/*" ],
@@ -9,6 +9,11 @@
       "js": [ "popup.js" ]
     }
   ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
   "icons":{
     "48":"icons/steamspy.png"
   },

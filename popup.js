@@ -3,9 +3,9 @@
 		gameId = location.href.split('/')[4],
 		steamspyUrl = "https://steamspy.com";
 
-	xhr.open("GET", steamspyUrl + "/api.php?request=appdetails&appid=" + gameId, true); // тут происходит ГЕТ запрос на указанную страницу
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4) {
+	chrome.runtime.sendMessage({
+		contentScriptQuery: "appData", gameId: gameId},
+		response => {
 			var timeBeautify = function(t) {
 				var t1,t2;
 				return (
@@ -23,7 +23,7 @@
 					)
 			};
 
-			var data = JSON.parse(xhr.responseText);
+			var data = response;
 
 			// Setup where to add the data on page
 			var el = document.querySelector(".apphub_AppName");
@@ -81,8 +81,6 @@
 			}
 
 			rightcol.insertBefore(bodyDiv, rightcol.firstChild);
-		}
-	}
-	xhr.send();
+		});
 })();
 
